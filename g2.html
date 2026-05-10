@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Surprise</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(135deg,#ffc7da,#ffe4ec);
+      overflow-x:hidden;
+      padding:20px;
+    }
+
+    .phone{
+      width:100%;
+      max-width:420px;
+      min-height:95vh;
+      background:white;
+      border-radius:40px;
+      overflow:hidden;
+      border:8px solid black;
+      box-shadow:0 20px 40px rgba(0,0,0,0.2);
+      position:relative;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .title{
+      text-align:center;
+      font-size:clamp(22px,5vw,30px);
+      font-weight:bold;
+      color:#222;
+      margin-top:15px;
+      padding:0 20px;
+    }
+
+    .card{
+      width:92%;
+      flex:1;
+      background:#fff6f9;
+      margin:20px auto;
+      border-radius:30px;
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      padding:20px;
+      text-align:center;
+      box-shadow:inset 0 0 20px rgba(255,105,180,0.1);
+    }
+
+    .blob1,.blob2{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(20px);
+      opacity:0.3;
+    }
+
+    .blob1{
+      width:200px;
+      height:200px;
+      background:#ff8db3;
+      top:-50px;
+      left:-50px;
+    }
+
+    .blob2{
+      width:180px;
+      height:180px;
+      background:#ffb6c9;
+      bottom:-40px;
+      right:-40px;
+    }
+
+    .slide{
+      display:none;
+      position:relative;
+      z-index:2;
+      width:100%;
+      animation:fade 0.5s ease;
+    }
+
+    .slide.active{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      animation:popIn 0.7s ease;
+    }
+
+    @keyframes fade{
+      from{
+        opacity:0;
+        transform:translateY(20px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @keyframes popIn{
+      0%{
+        opacity:0;
+        transform:scale(0.8) translateY(30px);
+      }
+      100%{
+        opacity:1;
+        transform:scale(1) translateY(0);
+      }
+    }
+
+    .slide img{
+      width:min(75vw,220px);
+      height:min(75vw,220px);
+      object-fit:cover;
+      border-radius:20px;
+      margin-bottom:20px;
+      box-shadow:0 10px 20px rgba(0,0,0,0.15);
+      animation:float 3s ease-in-out infinite;
+    }
+
+    @keyframes float{
+      0%{transform:translateY(0px);}
+      50%{transform:translateY(-10px);}
+      100%{transform:translateY(0px);}
+    }
+
+    h1{
+      font-size:clamp(28px,6vw,40px);
+      color:#ff4f87;
+      margin-bottom:10px;
+    }
+
+    p{
+      color:#555;
+      margin-bottom:20px;
+      line-height:1.7;
+      font-size:clamp(14px,3vw,17px);
+      padding:0 10px;
+    }
+
+    .btns{
+      display:flex;
+      justify-content:center;
+      gap:15px;
+      flex-wrap:wrap;
+      width:100%;
+    }
+
+    button{
+      border:none;
+      padding:12px 28px;
+      border-radius:40px;
+      background:#ff5f96;
+      color:white;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+      box-shadow:0 6px 12px rgba(255,95,150,0.3);
+    }
+
+    button:hover{
+      transform:scale(1.05);
+    }
+
+    .secondary{
+      background:#ffd5e4;
+      color:#444;
+    }
+
+    .progress{
+      width:85%;
+      height:10px;
+      background:#ffd8e5;
+      margin:10px auto;
+      border-radius:20px;
+      overflow:hidden;
+    }
+
+    .progress-bar{
+      width:0%;
+      height:100%;
+      background:linear-gradient(to right,#ff5f96,#ff8db3);
+      transition:0.5s;
+    }
+
+    .step{
+      text-align:center;
+      color:#666;
+      margin-bottom:15px;
+      font-size:14px;
+    }
+
+    .gallery{
+      display:flex;
+      gap:10px;
+      margin-top:20px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    .gallery img{
+      width:90px;
+      height:90px;
+      border-radius:12px;
+    }
+
+    .heart{
+      position:absolute;
+      color:pink;
+      font-size:20px;
+      animation:fly 5s linear infinite;
+      opacity:0.7;
+    }
+
+    @keyframes fly{
+      0%{
+        transform:translateY(100vh) scale(0.5);
+        opacity:0;
+      }
+      10%{
+        opacity:1;
+      }
+      100%{
+        transform:translateY(-120vh) scale(1.2);
+        opacity:0;
+      }
+    }
+
+    @media(max-width:500px){
+      body{
+        padding:0;
+      }
+
+      .phone{
+        max-width:100%;
+        min-height:100vh;
+        border-radius:0;
+        border:none;
+      }
+
+      .card{
+        width:95%;
+      }
+
+      button{
+        width:100%;
+        max-width:250px;
+      }
+
+      .gallery img{
+        width:75px;
+        height:75px;
+      }
+    }
+
+    @media(min-width:900px){
+      .phone{
+        max-width:450px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="heart" style="left:10%; animation-delay:0s;">💖</div>
+  <div class="heart" style="left:25%; animation-delay:1s;">💕</div>
+  <div class="heart" style="left:40%; animation-delay:2s;">💗</div>
+  <div class="heart" style="left:60%; animation-delay:0.5s;">💞</div>
+  <div class="heart" style="left:80%; animation-delay:1.5s;">❤️</div>
+
+  <div class="phone">
+
+    <div class="title">
+      A Little Surprise For You 💖
+    </div>
+
+    <div class="card">
+
+      <div class="blob1"></div>
+      <div class="blob2"></div>
+
+      <!-- Slide 1 -->
+      <div class="slide active">
+        <img src="gif/hey.gif" alt="">
+        <h1>HEY!!</h1>
+
+        <p>
+          I made something for you ❤️<br>
+          Do you want to see?
+        </p>
+
+        <div class="btns">
+          <button onclick="goToSlide(2)">Yes</button>
+          <button class="secondary" onclick="goToSlide(1)">No</button>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <img src="gif/no.gif" alt="">
+
+        <h1>Don't you even want to see? 😟</h1>
+
+        <p>
+          You clicked No...<br>
+          Please reconsider 😭💖
+        </p>
+
+        <button onclick="goToSlide(0)">Go Back</button>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <img src="images/c2.jpeg" alt="">
+
+        <h1>Good Girl 🌸</h1>
+
+        <p>Ready for your surprise?</p>
+
+        <button onclick="nextSlide()">Continue</button>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="slide">
+        <img src="gif/happybirthday.gif" alt="">
+
+        <h1>
+          HAPPY BIRTHDAY ❤️<br>
+          <span style="color:violet;">
+            <i>Dear Kopila</i>
+          </span>
+        </h1>
+
+        <p>
+          You are my favorite notification ✨<br>
+          Stay cute. Stay happy.
+        </p>
+
+        <button onclick="nextSlide()">Continue</button>
+      </div>
+
+      <!-- Slide 5 -->
+      <div class="slide">
+        <img src="gif/letter.gif" alt="">
+
+        <h1>Open Letter 💌</h1>
+
+        <p>Tap below to open your message</p>
+
+        <button onclick="nextSlide()">Open</button>
+      </div>
+
+      <!-- Slide 6 -->
+      <div class="slide">
+        <img src="images/g5.jpeg" alt="">
+
+        <h1>You are Loved ❤️</h1>
+
+        <p>
+          No matter what happens,<br>
+          I’ll always be here for you.
+        </p>
+
+        <button onclick="nextSlide()">Continue</button>
+      </div>
+
+      <!-- Slide 7 -->
+      <div class="slide">
+
+        <h1>Everyone loves you 💖</h1>
+        <h1>I'm also one of them 😁</h1>
+
+        <div class="gallery">
+          <img src="images/s1.jpg">
+          <img src="images/s3.jpg">
+          <img src="images/s2.jpg">
+        </div>
+
+        <p style="margin-top:20px;">
+          You mean more to me than words can explain.
+        </p>
+
+        <button onclick="nextSlide()">Continue</button>
+      </div>
+
+      <!-- Slide 8 -->
+      <div class="slide">
+
+        <img src="images/g3.jpeg" alt="">
+
+        <h1>Have The Best Year 🌈✨</h1>
+
+        <p> I hope this year brings you<br> endless smiles, peaceful days,<br> beautiful surprises, and all the happiness you deserve 💖 <br><br> May every morning make you feel excited, every evening make you feel proud, and every little moment remind you how special you are 🌸 <br><br> Keep shining, keep laughing, and never forget how loved you are 🫂💕 </p> <p> I truly hope this year becomes one of the happiest chapters of your life 💖 <br><br> May your days be filled with peace, your heart with love, and your smile with reasons to stay forever 🌸 <br><br> No matter where life takes you, I hope you always find sunshine after every cloudy day ☀️ </p>
+        <h1>My Dearest <i>Kopila</i>🥰💗</h1>
+        <button onclick="nextSlide()">Continue</button>
+      </div>
+
+      <!-- Slide 9 -->
+      <div class="slide">
+
+        <img src="gif/flowers.gif" alt="">
+
+        <h1>
+          Final Surprise 🎁<br>
+          for cutie pie 😊
+        </h1>
+
+        <p>Tap the gift box below 👀</p>
+
+        <button onclick="openGift()">
+          Open Gift 🎁
+        </button>
+      </div>
+
+      <!-- Slide 10 -->
+      <div class="slide">
+
+        <img src="gif/thankyou.gif" alt="">
+
+        <h1>Thank You For Existing ❤️</h1>
+
+        <p>
+          Thank you for coming into my life 🌸
+          <br><br>
+
+          I love your existence,
+          and I truly cherish your presence 💖
+          <br><br>
+
+          You make ordinary days feel special,
+          and your smile makes everything brighter ✨
+          <br><br>
+
+          I’ll always be grateful
+          that our paths crossed 🫂
+        </p>
+
+        <button onclick="restartStory()">
+          Replay Everything 🔁
+        </button>
+      </div>
+
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="step" id="stepText">
+      Step 1 / 10
+    </div>
+
+  </div>
+
+  <script>
+
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const stepText = document.getElementById('stepText');
+
+    let currentSlide = 0;
+
+    function updateSlides(){
+
+      slides.forEach((slide,index)=>{
+
+        slide.classList.remove('active');
+
+        if(index===currentSlide){
+          slide.classList.add('active');
+        }
+
+      });
+
+      let progress=((currentSlide+1)/slides.length)*100;
+
+      progressBar.style.width=progress+'%';
+
+      stepText.innerText=`Step ${currentSlide+1} / ${slides.length}`;
+    }
+
+    function nextSlide(){
+
+      if(currentSlide < slides.length-1){
+
+        currentSlide++;
+        updateSlides();
+
+      }
+    }
+
+    function goToSlide(index){
+
+      if(index===2 && currentSlide===0){
+
+        const music=document.getElementById('birthdayMusic');
+
+        music.volume=0.5;
+
+        music.play().catch(()=>{
+          console.log("Autoplay blocked.");
+        });
+      }
+
+      currentSlide=index;
+
+      updateSlides();
+    }
+
+    function openGift(){
+
+      const finalSlide = slides[8];
+
+      finalSlide.innerHTML = `
+        <div style="
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        width:100%;
+        animation:fade 1s ease;
+        ">
+
+          <div style="
+          font-size:120px;
+          animation:float 2s infinite;
+          ">
+            🎁
+          </div>
+
+          <p style="
+          margin-top:15px;
+          color:#ff4f87;
+          font-weight:bold;
+          font-size:18px;
+          ">
+            Opening your surprise...
+          </p>
+
+        </div>
+      `;
+
+      setTimeout(()=>{
+
+        finalSlide.innerHTML = `
+
+          <div style="
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          animation:popIn 1s ease;
+          ">
+
+            <h1 style="
+            color:#ff4f87;
+            margin-bottom:15px;
+            ">
+              Virtual Hug For You 🤍
+            </h1>
+
+            <img src="gif/hug.gif"
+            style="
+            width:min(80vw,240px);
+            border-radius:25px;
+            box-shadow:0 15px 30px rgba(0,0,0,0.2);
+            ">
+
+            <p style="
+            margin-top:20px;
+            line-height:1.7;
+            font-size:17px;
+            color:#555;
+            ">
+              Whenever you feel sad,<br>
+              come back here and take this hug 🫂
+            </p>
+
+            <div style="
+            font-size:30px;
+            margin-top:15px;
+            ">
+              💖 💕 💞
+            </div>
+
+            <button onclick="nextSlide()"
+            style="margin-top:25px;">
+              One Last Message 💌
+            </button>
+
+          </div>
+        `;
+
+      },2200);
+    }
+
+    function restartStory(){
+      location.reload();
+    }
+
+    updateSlides();
+
+    
+const pass = prompt("Enter our secret password ❤️");
+
+if(pass !== "happybirthdaykops"){
+document.body.innerHTML = `
+<style>
+body{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+background:black;
+color:white;
+font-family:sans-serif;
+}
+</style>
+<h1>Access Denied 💔</h1>
+`;
+}
+
+
+  </script>
+
+</body>
+
+<audio id="birthdayMusic" loop>
+  <source src="audio/birthday-music.mp3" type="audio/mp3">
+</audio>
+
+</html>
